@@ -1,0 +1,40 @@
+{
+  "name": "wing-axios",
+  "version": "0.0.1",
+  "description": "a http tool based on axios",
+  "keywords": [
+    "wing-axios",
+    "wingaxios",
+    "http",
+    "wing",
+    "axios"
+  ],
+  "main": "dist/wing-axios.es.js",
+  "module": "dist/wing-axios.es.js",
+  "unpkg": "dist/wing-axios.js",
+  "files": [
+    "dist",
+    "lib",
+    "es"
+  ],
+  "scripts": {
+    "build": "rollup --config"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wayley/wing-axios.git"
+  },
+  "author": {
+    "name": "Robben Wayley",
+    "email": "hb_wangzheng@163.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Wayley/wing-axios/issues"
+  },
+  "homepage": "https://github.com/Wayley/wing-axios#readme",
+  "devDependencies": {
+    "rollup": "^2.55.1",
+    "rollup-plugin-terser": "^7.0.2"
+  }
+}
