@@ -60,6 +60,7 @@ export function createWingService({
   loadingTips = { start: () => {}, finish: () => {}, error: () => {} },
   apiUrls = {},
   token,
+  commonParams = {},
 }) {
   const wingAxios = new WingAxios({
     baseURL,
@@ -75,7 +76,8 @@ export function createWingService({
     let apiInfo = apiUrls[key].split(',');
     const method = apiInfo[0] ? apiInfo[0].toLowerCase() : 'get';
     const url = host + apiInfo[1];
-    apis[key] = (params = {}, isFormPost) => {
+    apis[key] = (p = {}, isFormPost) => {
+      let params = { ...commonParams, ...p };
       let arg;
       if (method === 'post') {
         // form提交的时候不做处理
