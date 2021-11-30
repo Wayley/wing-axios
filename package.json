@@ -1,6 +1,6 @@
 {
   "name": "wing-axios",
-  "version": "0.0.3",
+  "version": "0.0.31",
   "description": "a http tool based on axios",
   "keywords": [
     "wing-axios",

@@ -51,6 +51,17 @@ WingAxios.prototype.create = function () {
   return instance;
 };
 
+function toQueryString(query) {
+  if (!query) return '';
+  let result = [];
+  for (const key in query) {
+    if (Object.hasOwnProperty.call(query, key)) {
+      result.push(`${key}=${query[key]}`);
+    }
+  }
+  return result.length > 0 ? '?' + result.join('&') : '';
+}
+
 export function createWingService({
   host = '', // 请求地址的HOST
   baseURL = '', // 请求地址的BASEURL
@@ -61,6 +72,7 @@ export function createWingService({
   apiUrls = {},
   token,
   commonParams = {},
+  commonQuery = {},
 }) {
   const wingAxios = new WingAxios({
     baseURL,
@@ -75,13 +87,13 @@ export function createWingService({
     // putRepo: 'PUT,/repos/{id}'
     let apiInfo = apiUrls[key].split(',');
     const method = apiInfo[0] ? apiInfo[0].toLowerCase() : 'get';
-    const url = host + apiInfo[1];
-    apis[key] = (p = {}, isFormPost) => {
-      let params = { ...commonParams, ...p };
+    const url = host + apiInfo[1] + toQueryString(commonQuery);
+    apis[key] = (data = {}, isFormPost) => {
+      let params = { ...commonParams, ...data };
       let arg;
       if (method === 'post') {
         // form提交的时候不做处理
-        arg = isFormPost ? params : JSON.stringify(params);
+        arg = isFormPost ? data : JSON.stringify(params);
       } else if (method === 'put' || method === 'patch') {
         arg = qs.stringify(params);
       } else {
