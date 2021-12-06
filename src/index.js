@@ -61,7 +61,14 @@ function toQueryString(query) {
   }
   return result.length > 0 ? '?' + result.join('&') : '';
 }
-
+function isFunction(value) {
+  // FIXME:
+  return typeof value === 'function';
+}
+function isObject(value) {
+  // FIXME:
+  return typeof value === 'object';
+}
 export function createWingService({
   host = '', // 请求地址的HOST
   baseURL = '', // 请求地址的BASEURL
@@ -87,9 +94,26 @@ export function createWingService({
     // putRepo: 'PUT,/repos/{id}'
     let apiInfo = apiUrls[key].split(',');
     const method = apiInfo[0] ? apiInfo[0].toLowerCase() : 'get';
-    const url = host + apiInfo[1] + toQueryString(commonQuery);
     apis[key] = (data = {}, isFormPost) => {
-      let params = { ...commonParams, ...data };
+      /* ****************************** URL-QUERY ****************************** */
+      // 如果是函数(动态数据)，则在每次调用的时候再获取最新的
+      let queryString = '';
+      if (isFunction(commonQuery)) {
+        queryString = toQueryString(commonQuery());
+      } else if (isObject(commonQuery)) {
+        queryString = toQueryString(commonQuery);
+      }
+      const url = `${host}${apiInfo[1]}${queryString}`;
+
+      /* ****************************** PARAMS ****************************** */
+      // 如果是函数(动态数据)，则在每次调用的时候再获取最新的
+      let _commonParams = {};
+      if (isFunction(commonParams)) {
+        _commonParams = commonParams();
+      } else if (isObject(commonParams)) {
+        _commonParams = commonParams;
+      }
+      let params = { ..._commonParams, ...data };
       let arg;
       if (method === 'post') {
         // form提交的时候不做处理
@@ -99,6 +123,7 @@ export function createWingService({
       } else {
         arg = { params };
       }
+      /* ****************************** HEADERS-TOKEN ****************************** */
       // 更新instance的headers
       // token属性优先配置
       // 没有指定token属性时再根据tokenName属性获取Cookie中的token
@@ -113,6 +138,7 @@ export function createWingService({
           ] = `Bearer ${token()}`;
         }
       }
+
       return instance[method](url, arg).then((response) => response.data);
     };
   }
