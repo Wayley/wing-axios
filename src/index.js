@@ -119,7 +119,7 @@ export function createWingService({
         // form提交的时候不做处理
         arg = isFormPost ? data : JSON.stringify(params);
       } else if (method === 'put' || method === 'patch') {
-        arg = qs.stringify(params);
+        arg = JSON.stringify(params);
       } else {
         arg = { params };
       }
