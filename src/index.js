@@ -80,6 +80,7 @@ export function createWingService({
   token,
   commonParams = {},
   commonQuery = {},
+  onError,
 }) {
   const wingAxios = new WingAxios({
     baseURL,
@@ -133,13 +134,13 @@ export function createWingService({
           instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         }
         if (typeof token === 'function') {
-          instance.defaults.headers.common[
-            'Authorization'
-          ] = `Bearer ${token()}`;
+          instance.defaults.headers.common['Authorization'] = `Bearer ${token()}`;
         }
       }
 
-      return instance[method](url, arg).then((response) => response.data);
+      return instance[method](url, arg)
+        .then((response) => response.data)
+        .catch((error) => onError?.(error));
     };
   }
   return apis;
