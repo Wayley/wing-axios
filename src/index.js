@@ -140,7 +140,7 @@ export function createWingService({
 
       return instance[method](url, arg)
         .then((response) => response.data)
-        .catch((error) => onError?.(error));
+        .catch((error) => onError && onError(error));
     };
   }
   return apis;
